@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Halloween Wordle 👻</title>
+
+  <!-- Preload image (loads faster) -->
+  <link rel="preload" as="image" href="assets/photo1.png">
+
   <style>
     body {
       background-color: #1a1a1a;
@@ -41,37 +45,24 @@
       color: white;
       transition: background-color 0.3s, transform 0.2s;
     }
-    .correct {
-      background-color: #538d4e; /* green */
-      transform: scale(1.1);
-    }
-    .present {
-      background-color: #b59f3b; /* yellow */
-    }
-    .absent {
-      background-color: #3a3a3c; /* gray */
-    }
-    #message {
-      margin-top: 20px;
-      font-size: 20px;
-      color: orange;
-      text-shadow: 0 0 10px orange;
-    }
-    footer {
-      margin-top: 30px;
-      color: #888;
-      font-size: 14px;
-    }
+    .correct { background-color: #538d4e; transform: scale(1.1); }
+    .present { background-color: #b59f3b; }
+    .absent { background-color: #3a3a3c; }
+    #message { margin-top: 20px; font-size: 20px; color: orange; text-shadow: 0 0 10px orange; }
+    footer { margin-top: 30px; color: #888; font-size: 14px; }
   </style>
 </head>
+
 <body>
+  <!-- 👇 This actually shows your image -->
+  <img src="assets/photo1.png" alt="Halloween Image" width="200" style="margin-top:20px; border-radius:10px;"/>
+
   <h1>🎃 Halloween Wordle 👻</h1>
-<link rel="preload" as="image" href="assets/photo1.png">
   <p>Guess the 5-letter word. You have 6 tries!</p>
   <div id="board"></div>
   <p id="message"></p>
 
-
+  <!-- (Your JS stays exactly the same) -->
   <script>
     const ANSWER = "TAXES";
     const board = document.getElementById("board");
@@ -81,7 +72,6 @@
     let currentGuess = "";
     let isGameOver = false;
 
-    // Create 6x5 board
     for (let i = 0; i < 6; i++) {
       const row = document.createElement("div");
       row.classList.add("row");
@@ -129,7 +119,6 @@
       const answerArray = ANSWER.split("");
       const guessArray = guess.split("");
 
-      // First pass: correct letters
       for (let i = 0; i < 5; i++) {
         const tile = row.children[i];
         if (guessArray[i] === answerArray[i]) {
@@ -139,7 +128,6 @@
         }
       }
 
-      // Second pass: present/absent letters
       for (let i = 0; i < 5; i++) {
         const tile = row.children[i];
         if (!guessArray[i]) continue;
@@ -153,7 +141,7 @@
       }
 
       if (guess === ANSWER) {
-        message.textContent = "🎉 ";
+        message.textContent = "🎉 You found it!";
         confetti();
         isGameOver = true;
         return;
@@ -163,12 +151,11 @@
       currentGuess = "";
 
       if (currentRow === 6) {
-        message.textContent = ` The word was ${ANSWER}!`;
+        message.textContent = `💀 The word was ${ANSWER}!`;
         isGameOver = true;
       }
     }
 
-    // Simple confetti for fun
     function confetti() {
       for (let i = 0; i < 30; i++) {
         const piece = document.createElement("div");
@@ -186,9 +173,7 @@
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes fall {
-        to {
-          transform: translateY(110vh) rotate(360deg);
-        }
+        to { transform: translateY(110vh) rotate(360deg); }
       }
     `;
     document.head.appendChild(style);
