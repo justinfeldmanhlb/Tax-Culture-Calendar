@@ -37,7 +37,7 @@
       justify-content: center;
       margin: 20px auto;
       width: 100%;
-      max-width: 500px;
+      max-width: 500px; /* max width to keep board manageable on wide screens */
     }
 
     .row {
@@ -47,7 +47,7 @@
     }
 
     .tile {
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 1 / 1; /* keeps tiles perfectly square */
       border: 2px solid #555;
       text-transform: uppercase;
       font-size: calc(16px + 1.5vw);
@@ -86,7 +86,7 @@
       font-size: 1em;
     }
 
-    /* Hidden text input for mobile typing */
+    /* Hidden input for mobile typing - not shown on desktop */
     #mobile-input {
       position: fixed;
       bottom: 10px;
@@ -145,7 +145,7 @@
     // Desktop keyboard input
     document.addEventListener("keydown", handleKeyPress);
 
-    // Mobile: show input on tap
+    // Mobile: show input on tap (though hidden on desktop)
     board.addEventListener("click", () => {
       if (isGameOver) return;
       mobileInput.style.display = "block";
