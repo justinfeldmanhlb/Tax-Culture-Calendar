@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Halloween Wordle 👻</title>
 
-  <!-- Preload image for faster loading -->
   <link rel="preload" as="image" href="photo1.png">
 
   <style>
@@ -21,6 +20,13 @@
     h1 {
       color: orange;
       text-shadow: 0 0 10px orange;
+      font-size: 2em;
+    }
+
+    p.instruction {
+      font-size: 1.1em;
+      margin-top: 5px;
+      color: #f2a500;
     }
 
     #board {
@@ -29,6 +35,7 @@
       gap: 5px;
       justify-content: center;
       margin: 20px auto;
+      max-width: 95vw;
     }
 
     .row {
@@ -48,20 +55,12 @@
       background-color: #222;
       color: white;
       transition: background-color 0.3s, transform 0.2s;
+      touch-action: manipulation;
     }
 
-    .correct {
-      background-color: #538d4e; /* green */
-      transform: scale(1.1);
-    }
-
-    .present {
-      background-color: #b59f3b; /* yellow */
-    }
-
-    .absent {
-      background-color: #3a3a3c; /* gray */
-    }
+    .correct { background-color: #538d4e; transform: scale(1.1); }
+    .present { background-color: #b59f3b; }
+    .absent  { background-color: #3a3a3c; }
 
     #message {
       margin-top: 20px;
@@ -72,41 +71,69 @@
 
     #bottom-image {
       margin-top: 40px;
-      width: 200px;
+      width: 80%;
+      max-width: 200px;
       border-radius: 10px;
       box-shadow: 0 0 20px orange;
     }
 
     footer {
       margin-top: 30px;
-      color: #888;
-      font-size: 14px;
+      color: #f2a500;
+      font-size: 1em;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 480px) {
+      .tile { width: 40px; height: 40px; font-size: 20px; line-height: 40px; }
+      #bottom-image { max-width: 150px; }
+    }
+
+    /* Hidden text input for mobile typing */
+    #mobile-input {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      font-size: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px solid orange;
+      background-color: #333;
+      color: white;
+      text-transform: uppercase;
+      display: none;
+      z-index: 1000;
     }
   </style>
 </head>
 
 <body>
   <h1>🎃 Halloween Wordle 👻</h1>
-  <p>Guess the 5-letter word. You have 6 tries!</p>
+  <p class="instruction">&lt;Type to guess the 5-letter word!&gt;</p>
 
   <div id="board"></div>
   <p id="message"></p>
 
-  <!-- 🎃 Image placed at bottom of the screen -->
   <img id="bottom-image" src="photo1.png" alt="Halloween Image" />
 
-  <footer> Get Ready For Trick or Trivia  </footer>
+  <footer>&lt;Get Ready For Trick or Trivia&gt;</footer>
+
+  <!-- Mobile input -->
+  <input id="mobile-input" type="text" maxlength="5" placeholder="Type here..." />
 
   <script>
     const ANSWER = "TAXES";
     const board = document.getElementById("board");
     const message = document.getElementById("message");
+    const mobileInput = document.getElementById("mobile-input");
 
     let currentRow = 0;
     let currentGuess = "";
     let isGameOver = false;
 
-    // Create 6x5 board
+    // Build 6x5 board
     for (let i = 0; i < 6; i++) {
       const row = document.createElement("div");
       row.classList.add("row");
@@ -118,19 +145,45 @@
       board.appendChild(row);
     }
 
+    // Desktop keyboard input
     document.addEventListener("keydown", handleKeyPress);
+
+    // Mobile: show input on tap
+    board.addEventListener("click", () => {
+      if (isGameOver) return;
+      mobileInput.style.display = "block";
+      mobileInput.focus();
+    });
+
+    mobileInput.addEventListener("input", (e) => {
+      if (isGameOver) return;
+      let value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+      if (value.length > 5) value = value.slice(0,5);
+      e.target.value = value;
+
+      // Update board tiles
+      const row = board.children[currentRow];
+      for (let i = 0; i < 5; i++) {
+        row.children[i].textContent = value[i] || "";
+      }
+      currentGuess = value;
+    });
+
+    mobileInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && currentGuess.length === 5) {
+        checkGuess();
+        mobileInput.value = "";
+      } else if (e.key === "Backspace") {
+        // Allow default behavior
+      }
+    });
 
     function handleKeyPress(e) {
       if (isGameOver) return;
       const key = e.key.toUpperCase();
-
-      if (key === "ENTER") {
-        if (currentGuess.length === 5) checkGuess();
-      } else if (key === "BACKSPACE") {
-        deleteLetter();
-      } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
-        addLetter(key);
-      }
+      if (key === "ENTER") { if (currentGuess.length === 5) checkGuess(); }
+      else if (key === "BACKSPACE") { deleteLetter(); }
+      else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) { addLetter(key); }
     }
 
     function addLetter(letter) {
@@ -154,7 +207,7 @@
       const answerArray = ANSWER.split("");
       const guessArray = guess.split("");
 
-      // First pass: correct letters
+      // Correct letters
       for (let i = 0; i < 5; i++) {
         const tile = row.children[i];
         if (guessArray[i] === answerArray[i]) {
@@ -164,7 +217,7 @@
         }
       }
 
-      // Second pass: present/absent letters
+      // Present/absent
       for (let i = 0; i < 5; i++) {
         const tile = row.children[i];
         if (!guessArray[i]) continue;
@@ -181,6 +234,7 @@
         message.textContent = "🎉 You got the word! 👻";
         confetti();
         isGameOver = true;
+        mobileInput.style.display = "none";
         return;
       }
 
@@ -190,10 +244,10 @@
       if (currentRow === 6) {
         message.textContent = `💀 The word was ${ANSWER}!`;
         isGameOver = true;
+        mobileInput.style.display = "none";
       }
     }
 
-    // Simple confetti for fun
     function confetti() {
       for (let i = 0; i < 30; i++) {
         const piece = document.createElement("div");
