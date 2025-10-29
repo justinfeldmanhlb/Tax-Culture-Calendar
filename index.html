@@ -36,23 +36,25 @@
       gap: 5px;
       justify-content: center;
       margin: 20px auto;
-      max-width: 95vw;
+      width: 100%;
+      max-width: 500px;
     }
 
     .row {
-      display: flex;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
       gap: 5px;
     }
 
     .tile {
-      width: 50px;
-      height: 50px;
+      aspect-ratio: 1 / 1;
       border: 2px solid #555;
       text-transform: uppercase;
-      font-size: 24px;
-      line-height: 50px;
-      text-align: center;
+      font-size: calc(16px + 1.5vw);
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background-color: #222;
       color: white;
       transition: background-color 0.3s, transform 0.2s;
@@ -82,12 +84,6 @@
       margin-top: 30px;
       color: #f2a500;
       font-size: 1em;
-    }
-
-    /* Mobile tweaks */
-    @media (max-width: 480px) {
-      .tile { width: 40px; height: 40px; font-size: 20px; line-height: 40px; }
-      #bottom-image { max-width: 150px; }
     }
 
     /* Hidden text input for mobile typing */
@@ -162,7 +158,6 @@
       if (value.length > 5) value = value.slice(0,5);
       e.target.value = value;
 
-      // Update board tiles
       const row = board.children[currentRow];
       for (let i = 0; i < 5; i++) {
         row.children[i].textContent = value[i] || "";
