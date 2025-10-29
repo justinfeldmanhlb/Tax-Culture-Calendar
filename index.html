@@ -21,11 +21,12 @@
       color: orange;
       text-shadow: 0 0 10px orange;
       font-size: 2em;
+      margin-bottom: 5px;
     }
 
     p.instruction {
       font-size: 1.1em;
-      margin-top: 5px;
+      margin-top: 0;
       color: #f2a500;
     }
 
@@ -111,14 +112,14 @@
 
 <body>
   <h1>🎃 Halloween Wordle 👻</h1>
-  <p class="instruction">&lt;Type to guess the 5-letter word!&gt;</p>
+  <p class="instruction">Type to guess the 5-letter word!</p>
 
   <div id="board"></div>
   <p id="message"></p>
 
   <img id="bottom-image" src="photo1.png" alt="Halloween Image" />
 
-  <footer>&lt;Get Ready For Trick or Trivia&gt;</footer>
+  <footer>Get Ready For Trick or Trivia</footer>
 
   <!-- Mobile input -->
   <input id="mobile-input" type="text" maxlength="5" placeholder="Type here..." />
@@ -173,8 +174,6 @@
       if (e.key === "Enter" && currentGuess.length === 5) {
         checkGuess();
         mobileInput.value = "";
-      } else if (e.key === "Backspace") {
-        // Allow default behavior
       }
     });
 
@@ -265,9 +264,7 @@
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes fall {
-        to {
-          transform: translateY(110vh) rotate(360deg);
-        }
+        to { transform: translateY(110vh) rotate(360deg); }
       }
     `;
     document.head.appendChild(style);
