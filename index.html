@@ -69,10 +69,10 @@
   <p>Guess the 5-letter word. You have 6 tries!</p>
   <div id="board"></div>
   <p id="message"></p>
-  <footer>Made with 💀 for the office Halloween event</footer>
+
 
   <script>
-    const ANSWER = "GHOST";
+    const ANSWER = "TAXES";
     const board = document.getElementById("board");
     const message = document.getElementById("message");
 
@@ -152,7 +152,7 @@
       }
 
       if (guess === ANSWER) {
-        message.textContent = "🎉 You found the GHOST! 👻";
+        message.textContent = "🎉 ";
         confetti();
         isGameOver = true;
         return;
@@ -162,7 +162,7 @@
       currentGuess = "";
 
       if (currentRow === 6) {
-        message.textContent = `💀 The word was ${ANSWER}!`;
+        message.textContent = ` The word was ${ANSWER}!`;
         isGameOver = true;
       }
     }
