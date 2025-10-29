@@ -95,10 +95,10 @@
   <!-- 🎃 Image placed at bottom of the screen -->
   <img id="bottom-image" src="photo1.png" alt="Halloween Image" />
 
-  <footer>Made with 💀 for the office Halloween event</footer>
+  <footer> Get Ready For Trick or Trivia  </footer>
 
   <script>
-    const ANSWER = "GHOST";
+    const ANSWER = "TAXES";
     const board = document.getElementById("board");
     const message = document.getElementById("message");
 
@@ -178,7 +178,7 @@
       }
 
       if (guess === ANSWER) {
-        message.textContent = "🎉 You found the GHOST! 👻";
+        message.textContent = "🎉 You got the word! 👻";
         confetti();
         isGameOver = true;
         return;
