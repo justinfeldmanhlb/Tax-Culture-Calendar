@@ -99,12 +99,32 @@
   <input type="text" id="hidden-input" maxlength="5" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
   <p id="message"></p>
 
+  <!-- This image will be replaced randomly by the script -->
   <img id="bottom-image" src="photo1.png" alt="Halloween Image" />
 
   <footer>Get Ready For Trick or Trivia</footer>
 
+  <!-- 🎲 Randomized Image Script -->
   <script>
-    const ANSWER = "TAXES";
+    document.addEventListener("DOMContentLoaded", () => {
+      const images = [
+        "photo1.png",
+        "photo2.png",
+        "photo3.png"
+      ];
+
+      const randomIndex = Math.floor(Math.random() * images.length);
+      const bottomImage = document.getElementById("bottom-image");
+
+      if (bottomImage) {
+        bottomImage.src = images[randomIndex];
+      }
+    });
+  </script>
+
+  <!-- 🧩 Main Wordle Game Script -->
+  <script>
+    const ANSWER = "OGRES";
     const board = document.getElementById("board");
     const message = document.getElementById("message");
     const hiddenInput = document.getElementById("hidden-input");
@@ -125,11 +145,9 @@
       board.appendChild(row);
     }
 
-    // Focus hidden input when board clicked (for mobile keyboard)
+    // Focus hidden input when board clicked (for mobile)
     board.addEventListener("click", () => {
-      if (!isGameOver) {
-        hiddenInput.focus();
-      }
+      if (!isGameOver) hiddenInput.focus();
     });
 
     // Listen for input events on hidden input
@@ -146,16 +164,13 @@
         }
       }
 
-      // Trim input to max 5 letters
-      if (value.length > 5) {
-        hiddenInput.value = value.slice(0, 5);
-      }
+      // Trim to 5 letters
+      if (value.length > 5) hiddenInput.value = value.slice(0, 5);
     });
 
-    // Handle backspace and enter keys on hidden input
+    // Handle backspace + enter
     hiddenInput.addEventListener("keydown", (e) => {
       if (isGameOver) return;
-
       if (e.key === "Backspace") {
         deleteLetter();
       } else if (e.key === "Enter" && currentGuess.length === 5) {
@@ -163,12 +178,11 @@
       }
     });
 
-    // Also keep original keyboard listener for desktop keyboard input
+    // Desktop keyboard input
     document.addEventListener("keydown", (e) => {
       if (isGameOver) return;
 
       const key = e.key.toUpperCase();
-
       if (key === "ENTER") {
         if (currentGuess.length === 5) checkGuess();
       } else if (key === "BACKSPACE") {
@@ -230,7 +244,7 @@
 
       currentRow++;
       currentGuess = "";
-      hiddenInput.value = "";  // Clear hidden input for next guess
+      hiddenInput.value = "";
 
       if (currentRow === 6) {
         message.textContent = `💀 The word was ${ANSWER}!`;
